@@ -1,0 +1,56 @@
+package semana20.exercicios;
+
+public abstract class Questao { 
+   
+    private int numero; 
+    private String enunciado; 
+    private String respostaCorreta; 
+    
+    public Questao(
+        int numero, 
+        String enunciado,
+        String respostaCorreta)
+    { 
+        this.numero = numero; 
+        this.enunciado = enunciado;
+        this.respostaCorreta = respostaCorreta; 
+     }
+
+
+//    public abstract boolean validarResposta(String resposta);
+
+//    public abstract int getPontuacao();
+    
+//    public boolean validarResposta(String resposta)
+//    { 
+//        return false;
+//    } 
+
+//    public abstract int getPontuacao();
+
+    public void mostraQuestao(int tipo){ 
+        System.out.println(); 
+        System.out.print(numero + ") " + enunciado); 
+        if (tipo == 1) System.out.print(" R: " + respostaCorreta);
+        System.out.println(); 
+    }
+
+    public boolean validaResposta(String resposta)
+    {
+        Boolean b;
+
+        b = respostaCorreta.equalsIgnoreCase(resposta);
+
+        System.out.println(); 
+        System.out.println(numero + ") " + enunciado); 
+
+        System.out.println("Gabarito: " + respostaCorreta); 
+        System.out.println("Minha Resposta: " + resposta); 
+ 
+        if (b) System.out.println("Resposta Correta.");
+        else   System.out.println("Resposta Incorreta.");
+
+        return b; 
+    }
+
+}
