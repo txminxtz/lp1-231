@@ -2,18 +2,17 @@ package estacionamento;
 
 import java.sql.*;
 
-class Usuario{
+class Proprietario{
 
     private String cod;
     private String nome;
-    private String cargo;
+    private String endereco;
     private String email;
     private String telefone;
-    private String senha;
 
     public static void main(String args[]){
 
-        String sNome, sEmail, sCargo, sTelefone, sSenha, sComando;
+        String sNome, sEmail, sCargo, sTelefone, sEndereco, sComando;
         ResultSet rs;
 
         try
@@ -27,34 +26,32 @@ class Usuario{
 
 
             System.out.println();
-            System.out.println("INCLUSAO DE USUARIOS");
+            System.out.println("INCLUSAO DE PROPRIETARIOS");
             System.out.println();
 
             sNome = "Lucas";
-            sCargo = "Contador";
+            sEndereco = "Rua Mauricio de Oliveira";
             sEmail = "lucas@gmail.com";
             sTelefone = "11999843581";
-            sSenha = "lucas213";
             
-            sComando = "INSERT INTO tbl_usuarios " +
-                        "(cod, nome, cargo, email, telefone, senha) " +
+            sComando = "INSERT INTO tbl_proprietarios " +
+                        "(cod, nome, endereco, email, telefone) " +
                         "VALUE ("+
                         "null, " +
                         "'" + sNome + "'" + ", " +
-                        "'" + sCargo + "'" + ", " +
+                        "'" + sEndereco + "'" + ", " +
                         "'" + sEmail + "'"+ ", " +
-                        "'" + sTelefone + "'"+ ", " +
-                        "'" + sSenha + "'" +
+                        "'" + sTelefone + "'" +
                         ")";
 
             stmt.execute(sComando);
 
 
             System.out.println();
-            System.out.println("RELATORIO DE USUARIOS");
+            System.out.println("RELATORIO DE PROPRIETARIOS");
             System.out.println();
 
-            rs = stmt.executeQuery("select * from tbl_usuarios");
+            rs = stmt.executeQuery("select * from tbl_proprietarios");
 
             while(rs.next()){
                 System.out.println(
@@ -62,8 +59,7 @@ class Usuario{
                     rs.getString(2) +"  "+
                     rs.getString(3) +"  "+
                     rs.getString(4) +"  "+
-                    rs.getString(5) +"  "+
-                    rs.getString(6)
+                    rs.getString(5)
                     );
             }           
 
