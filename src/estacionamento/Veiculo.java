@@ -1,86 +1,84 @@
 package estacionamento;
 
-import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+public class Veiculo {
 
-class Veiculos{
-
-    private String cod;
     private String placa;
     private String marca;
-    private double modelo;
-    private double cor;
+    private String modelo;
+    private String cor;
+    private int proprietario;
 
-    public static void main(String args[]){
+    public Veiculo (){}
 
-        String sPlaca, sMarca, sModelo, sCor, sComando, sAux;
-        ResultSet rs;
+    public Veiculo (
+        String placa, 
+        String marca, 
+        String modelo, 
+        String cor,
+        int proprietario) 
+    {
 
-        try
-        {
+        this.placa = placa;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.cor = cor;
+        this.proprietario = proprietario;
 
-            Class.forName("com.mysql.jdbc.Driver");
+    }
 
-            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/db_estacionamento","root","bts4");
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+    public String getPlaca () {
+        return this.placa;
+    }
 
-            Statement stmt=con.createStatement();
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+    public String getMarca () {
+        return this.marca;
+    }
 
-            System.out.println();
-            System.out.println("INCLUSAO DE VEICULOS");
-            System.out.println();
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+    public String getModelo () {
+        return this.modelo;
+    }
 
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:ms");
-            Calendar cal = Calendar.getInstance();
-            
-            sAux = dateFormat.format(cal.getTime());
-            System.out.println(sAux);
+    public void setCor(String cor) {
+        this.cor = cor;
+    }
+    public String getCor () {
+        return this.cor;
+    }
 
-            sAux = sAux.substring(sAux.length() - 4);
-            System.out.println(sAux);
+    public void setProprietario(int proprietario) {
+        this.proprietario = proprietario;
+    }
+    public int getProprietario () {
+        return this.proprietario;
+    }
 
-            sPlaca = "BTS"+sAux;
-            sMarca = "honda";
-            sModelo = "hrv";
-            sCor = "prata";
-            
-            sComando = "INSERT INTO tbl_veiculos " +
-                        "(placa, marca, modelo, cor) " +
-                        "VALUE ("+
-                        "'" + sPlaca + "'" + ", " +
-                        "'" + sMarca + "'"+ ", " +
-                        "'" + sModelo + "'" + ", " +
-                        "'" + sCor + "'" +
-                        ")";
+    public void exibeDados(int iTab){ 
 
-            stmt.execute(sComando);
+        int i;
 
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Placa: " + placa);
+ 
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Marca: " + marca);
+ 
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Modelo: " + modelo);
 
-            System.out.println();
-            System.out.println("RELATORIO DE VEICULOS");
-            System.out.println();
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Cor: " + cor);
 
-            rs = stmt.executeQuery("select * from tbl_veiculos");
-
-            while(rs.next()){
-                System.out.println(
-                    rs.getString(1)    +"  "+
-                    rs.getString(2) +"  "+
-                    rs.getString(3) +"  "+
-                    rs.getString(4)
-                    );
-            }           
-
-            System.out.println();
-
-            con.close();
-
-        }
-        catch(Exception e)
-        { 
-            System.out.println(e);
-        }
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Proprietario: " + proprietario);
 
     }
 

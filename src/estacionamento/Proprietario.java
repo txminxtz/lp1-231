@@ -1,78 +1,86 @@
 package estacionamento;
 
-import java.sql.*;
-
 class Proprietario{
 
-    private String cod;
+    private int cod;
     private String nome;
     private String endereco;
     private String email;
     private String telefone;
 
-    public static void main(String args[]){
+    public Proprietario(){}
 
-        String sNome, sEmail, sCargo, sTelefone, sEndereco, sComando;
-        ResultSet rs;
+    public Proprietario (
+        int cod, 
+        String nome, 
+        String endereco, 
+        String email, 
+        String telefone) 
+    {
 
-        try
-        {
-
-            Class.forName("com.mysql.jdbc.Driver");
-
-            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/db_estacionamento","root","bts4");
-
-            Statement stmt=con.createStatement();
-
-
-            System.out.println();
-            System.out.println("INCLUSAO DE PROPRIETARIOS");
-            System.out.println();
-
-            sNome = "Lucas";
-            sEndereco = "Rua Mauricio de Oliveira";
-            sEmail = "lucas@gmail.com";
-            sTelefone = "11999843581";
-            
-            sComando = "INSERT INTO tbl_proprietarios " +
-                        "(cod, nome, endereco, email, telefone) " +
-                        "VALUE ("+
-                        "null, " +
-                        "'" + sNome + "'" + ", " +
-                        "'" + sEndereco + "'" + ", " +
-                        "'" + sEmail + "'"+ ", " +
-                        "'" + sTelefone + "'" +
-                        ")";
-
-            stmt.execute(sComando);
-
-
-            System.out.println();
-            System.out.println("RELATORIO DE PROPRIETARIOS");
-            System.out.println();
-
-            rs = stmt.executeQuery("select * from tbl_proprietarios");
-
-            while(rs.next()){
-                System.out.println(
-                    rs.getInt(1)    +"  "+
-                    rs.getString(2) +"  "+
-                    rs.getString(3) +"  "+
-                    rs.getString(4) +"  "+
-                    rs.getString(5)
-                    );
-            }           
-
-            System.out.println();
-
-            con.close();
-
-        }
-        catch(Exception e)
-        { 
-            System.out.println(e);
-        }
+        this.cod = cod;
+        this.nome = nome;
+        this.endereco = endereco;
+        this.email = email;
+        this.telefone = telefone;
 
     }
+
+    public int getCod () {
+        return this.cod;
+    }
+    public void setCod(int cod) {
+        this.cod = cod;
+    }
+
+    public String getNome () {
+        return this.nome;
+    }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEndereco () {
+        return this.endereco;
+    }
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
+
+    public String getEmail () {
+        return this.email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelefone () {
+        return this.telefone;
+    }
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public void exibeDados(int iTab){ 
+
+        int i;
+
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Codigo: " + cod);
+ 
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Nome: " + nome);
+ 
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Endereco: " + endereco);
+
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Email: " + email);
+
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Telefone: " + telefone);
+
+    }
+
 
 }

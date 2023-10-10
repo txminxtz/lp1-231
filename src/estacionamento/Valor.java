@@ -1,85 +1,88 @@
 package estacionamento;
 
-import java.sql.*;
-
 class Valor{
 
-    private String cod;
+    private int cod;
     private double primeira;
     private double demais;
     private double diaria;
     private double mensalidade;
 
-    public static void main(String args[]){
 
-        String sCod, sPrimeira, sDemais, sDiaria, sMensalidade, sComando;
-        ResultSet rs;
+    public Valor(){}
 
-        try
-        {
+    public Valor(
+        int cod, 
+        double primeira, 
+        double demais, 
+        double diaria, 
+        double mensalidade) 
+    {
 
-            Class.forName("com.mysql.jdbc.Driver");
-
-            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/db_estacionamento","root","bts4");
-
-            Statement stmt=con.createStatement();
-
-            System.out.println();
-            System.out.println("TABELA ANTERIOR DE VALORES");
-            System.out.println();
-
-            rs = stmt.executeQuery("select * from tbl_valores");
-
-            while(rs.next()){
-                System.out.println(
-                    rs.getInt(1)    +"  "+
-                    rs.getString(2) +"  "+
-                    rs.getString(3) +"  "+
-                    rs.getString(4) +"  "+
-                    rs.getString(5)
-                    );
-            }     
-
-            sCod = "1";
-            sPrimeira = "12.00";
-            sDemais = "7.00";
-            sDiaria = "22.00";
-            sMensalidade = "120.00";
-
-            sComando = "UPDATE tbl_valores SET " +
-                        "primeira=" + "'" + sPrimeira + "'"+ ", " +
-                        "demais=" + "'" + sDemais + "'" + ", " +
-                        "diaria=" + "'" + sDiaria + "'" + ", " +
-                        "mensalidade=" + "'" + sMensalidade + "'" + " " +
-                        "WHERE cod="+sCod;
-
-            stmt.execute(sComando);
-
-            System.out.println();
-            System.out.println("TABELA ATUALIZADA DE VALORES");
-            System.out.println();
-
-            rs = stmt.executeQuery("select * from tbl_valores");
-
-            while(rs.next()){
-                System.out.println(
-                    rs.getInt(1)    +"  "+
-                    rs.getString(2) +"  "+
-                    rs.getString(3) +"  "+
-                    rs.getString(4) +"  "+
-                    rs.getString(5)
-                    );
-            }    
-            System.out.println();
-
-            con.close();
-
-        }
-        catch(Exception e)
-        { 
-            System.out.println(e);
-        }
+        this.cod = cod;
+        this.primeira = primeira;
+        this.demais = demais;
+        this.diaria = diaria;
+        this.mensalidade = mensalidade;
 
     }
+
+    public int getCod () {
+        return this.cod;
+    }
+    public void setCod(int cod) {
+        this.cod = cod;
+    }
+
+    public Double getPrimeira () {
+        return this.primeira;
+    }
+    public void setPrimeira(Double primeira) {
+        this.primeira = primeira;
+    }
+
+    public Double getDemais () {
+        return this.demais;
+    }
+    public void setDemais(Double demais) {
+        this.demais = demais;
+    }
+
+    public Double getDiaria () {
+        return this.diaria;
+    }
+    public void setDiaria(Double diaria) {
+        this.diaria = diaria;
+    }
+
+    public Double getMensalidade () {
+        return this.mensalidade;
+    }
+    public void setMensalidade(Double mensalidade) {
+        this.mensalidade = mensalidade;
+    }
+
+    public void exibeDados(int iTab){ 
+
+        int i;
+
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Codigo: " + cod);
+ 
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Primeira: " + primeira);
+ 
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Demais: " + demais);
+
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Diaria: " + diaria);
+
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Mensalidade: " + mensalidade);
+
+    }
+
+
 
 }
