@@ -4,7 +4,6 @@ class Proprietario{
 
     private int cod;
     private String nome;
-    private String endereco;
     private String email;
     private String telefone;
 
@@ -13,14 +12,12 @@ class Proprietario{
     public Proprietario (
         int cod, 
         String nome, 
-        String endereco, 
         String email, 
         String telefone) 
     {
 
         this.cod = cod;
         this.nome = nome;
-        this.endereco = endereco;
         this.email = email;
         this.telefone = telefone;
 
@@ -38,13 +35,6 @@ class Proprietario{
     }
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getEndereco () {
-        return this.endereco;
-    }
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
     }
 
     public String getEmail () {
@@ -71,9 +61,6 @@ class Proprietario{
         for (i=1; i<=iTab; i++) System.out.print("\t");
         System.out.println("Nome: " + nome);
  
-        for (i=1; i<=iTab; i++) System.out.print("\t");
-        System.out.println("Endereco: " + endereco);
-
         for (i=1; i<=iTab; i++) System.out.print("\t");
         System.out.println("Email: " + email);
 

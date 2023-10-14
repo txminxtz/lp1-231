@@ -11,11 +11,13 @@ public class Menu
 
     private Scanner l;
     private MenuAux menuAux;
+    private Usuario usuario;
+    private Tarifa tarifa;
 
     ////////////
     /////// CONSTRUTOR
 
-    public Menu(Usuario usuario) throws SQLException
+    public Menu(Usuario usuario, Tarifa tarifa) throws SQLException
     {
 
         l = new Scanner(System.in);
@@ -26,7 +28,16 @@ public class Menu
 
         if (usuario == null) usuario = menuAux.pesquisa_Usuario();
 
-        if (usuario !=null) Menu_Principal();
+        if (usuario == null) return;
+       
+        if (tarifa == null) tarifa = menuAux.pesquisa_Tarifa();
+
+        if (tarifa == null) return;
+
+        this.usuario = usuario;
+        this.tarifa = tarifa;
+
+        this.Menu_Principal();
 
     }
 
@@ -59,7 +70,7 @@ public class Menu
 
             } 
             else if (sAux.equalsIgnoreCase("2")) {
-                menuAux.dadosInput_Estacionamento();
+                menuAux.dadosInput_Estacionamento(usuario, tarifa);
 
             } 
             else if (sAux.equalsIgnoreCase("3")) {
@@ -93,7 +104,7 @@ public class Menu
         vet_sOpcoes[iTam++] = "1 - Usuarios";
         vet_sOpcoes[iTam++] = "2 - Proprietarios";
         vet_sOpcoes[iTam++] = "3 - Veiculos";
-        vet_sOpcoes[iTam++] = "4 - Valores";
+        vet_sOpcoes[iTam++] = "4 - Tarifas";
         vet_sOpcoes[iTam++] = "0 - Voltar";
 
         //l = new Scanner(System.in);
@@ -120,9 +131,9 @@ public class Menu
                 menuAux.dadosInput_Veiculo();
 
             } 
-            // CADSTRO DE VALORES
+            // CADSTRO DE Tarifas
             else if (sAux.equalsIgnoreCase("4")){
-                menuAux.dadosInput_Valor();
+                menuAux.dadosInput_Tarifa();
 
             }
             else {
@@ -135,7 +146,8 @@ public class Menu
     ////////////
     /////// MENU DE RELATORIOS
 
-    public void Menu_Relatorios()
+    public void Menu_Relatorios()throws SQLException {
+    try
     {
 
         boolean bMenu = true;
@@ -172,11 +184,18 @@ public class Menu
             }
         }
     }
-
+    catch(Exception e)
+    { 
+        System.out.println(e);
+        return;
+    }
+    }
+    
     ////////////
     /////// MENU DE RELATORIOS ADMINISTRATIVOS
 
-    public void Menu_Relatorios_Administrativos()
+    public void Menu_Relatorios_Administrativos() throws SQLException {
+    try
     {
 
         boolean bMenu = true;
@@ -188,7 +207,7 @@ public class Menu
         vet_sOpcoes[iTam++] = "1 - Usuarios";
         vet_sOpcoes[iTam++] = "2 - Proprietarios";
         vet_sOpcoes[iTam++] = "3 - Veiculos";
-        vet_sOpcoes[iTam++] = "4 - Valores";
+        vet_sOpcoes[iTam++] = "4 - Tarifas";
         vet_sOpcoes[iTam++] = "5 - Registros";
         vet_sOpcoes[iTam++] = "0 - Voltar";
 
@@ -204,31 +223,31 @@ public class Menu
             // RELATORIO DE USUARIOS
             else if (sAux.equalsIgnoreCase("1")) {
                  //menuAux.relatorio_Usuarios();
-                menuAux.relatorio("USUARIOS");
+                menuAux.relatorio_Geral("USUARIOS");
             
             } 
             // RELATORIO DE PROPRIETARIOS
             else if (sAux.equalsIgnoreCase("2")) {
                 //menuAux.relatorio_Proprietarios();
-                menuAux.relatorio("PROPRIETARIOS");
+                menuAux.relatorio_Geral("PROPRIETARIOS");
 
             } 
             // RELATORIO DE VEICULOS
             else if (sAux.equalsIgnoreCase("3")) {
                 //menuAux.relatorio_Veiculos();
-                menuAux.relatorio("VEICULOS");
+                menuAux.relatorio_Geral("VEICULOS");
                
             } 
-            // RELATORIO DE VALORES
+            // RELATORIO DE Tarifas
             else if (sAux.equalsIgnoreCase("4")) {
-                //menuAux.relatorio_Valores();
-                menuAux.relatorio("VALORES");
+                //menuAux.relatorio_Tarifas();
+                menuAux.relatorio_Geral("Tarifas");
 
             }
             // RELATORIO DE REGISTROS
             else if (sAux.equalsIgnoreCase("5")) {
-                //menuAux.relatorio_Valores();
-                menuAux.relatorio("REGISTROS");
+                //menuAux.relatorio_Tarifas();
+                menuAux.relatorio_Geral("REGISTROS");
 
             }  
             else {
@@ -236,12 +255,18 @@ public class Menu
             }
         }
     }
-
+    catch(Exception e)
+    { 
+        System.out.println(e);
+        return;
+    }
+    }
 
     ////////////
     /////// MENU DE RELATORIOS FINANCEIROS
 
-    public void Menu_Relatorios_Financeiros()
+    public void Menu_Relatorios_Financeiros() throws SQLException {
+    try
     {
 
         boolean bMenu = true;
@@ -251,7 +276,7 @@ public class Menu
 
         vet_sOpcoes[iTam++] = "========= RELATORIOS FINANCEIROS ==========";
         vet_sOpcoes[iTam++] = "1 - Geral por Periodo";
-        vet_sOpcoes[iTam++] = "2 - Veiculos por Periodo";
+        vet_sOpcoes[iTam++] = "2 - Veiculo por Periodo";
         vet_sOpcoes[iTam++] = "3 - Veiculos Estacionados";
         vet_sOpcoes[iTam++] = "0 - Voltar";
 
@@ -269,21 +294,20 @@ public class Menu
             else if (sAux.equalsIgnoreCase("1")) {
                 sAux = "GERAL POR PERIODO";
                 System.out.println("\nLISTA DE " + sAux + ":");
-                //bolsa.getAtivos().exibeComponentes(0);
+                menuAux.relatorio_Financeiro(1); 
             
             } 
             // VEICULO POR PERIODO
             else if (sAux.equalsIgnoreCase("2")) {
                 sAux = "VEICULO POR PERIODO";
                 System.out.println("\nLISTA DE " + sAux + ":");
-                //bolsa.getCorretoras().exibeComponentes(0);
-
+                menuAux.relatorio_Financeiro(2); 
             } 
             // VEICULOS ESTACIONADOS
             else if (sAux.equalsIgnoreCase("3")) {
                 sAux = "VEICULOS ESTACIONADOS";
                 System.out.println("\nLISTA DE " + sAux + ":");
-                //bolsa.getInvestidores().exibeComponentes(0);
+                menuAux.relatorio_Financeiro(3); 
 
             }
             else {
@@ -291,6 +315,14 @@ public class Menu
             }
         }
     }
+    catch(Exception e)
+    { 
+        System.out.println(e);
+        return;
+    }
+    }
+
+
 
 
     ////////////

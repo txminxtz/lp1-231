@@ -29,7 +29,7 @@ public class DAO_Registro extends DAO_Comum{
         con = fabricaCon.createConnection();
 
         // cria um preparedStatement baseado em uma string SQL
-        sSql = "INSERT INTO tbl_registros VALUES (?, ?, ?, ?, ?);";
+        sSql = "INSERT INTO tbl_registros VALUES (?, ?, ?, ?, ?, ?, ?);";
         stmt = con.prepareStatement(sSql);
 
         // preenche os valores para (?,?, ..., ?)
@@ -37,7 +37,9 @@ public class DAO_Registro extends DAO_Comum{
         stmt.setString(2, r.getPlaca());
         stmt.setString(3, r.getEntrada());
         stmt.setString(4, r.getSaida());
-        stmt.setDouble(5, r.getValor());
+        stmt.setInt(5, r.getTarifa());
+        stmt.setDouble(6, r.getValor());
+        stmt.setString(7, r.getUsuario());
 
         // executa o comando SQL
         stmt.executeUpdate();
@@ -64,7 +66,7 @@ public class DAO_Registro extends DAO_Comum{
     public Registro read(int iCod, boolean bShow){
     try {
 
-        String sSql;
+        String sSql, sEntrada, sSaida;
 
         ConnectionFactory fabricaCon;
         Connection con;
@@ -77,7 +79,7 @@ public class DAO_Registro extends DAO_Comum{
         fabricaCon = new ConnectionFactory();
         con = fabricaCon.createConnection();
 
-        // Busca o aluno pela matrícula
+        // Busca o registro pelo codigo
         sSql = "SELECT * FROM tbl_registros WHERE cod = ?";
         stmt = con.prepareStatement(sSql);
         stmt.setInt(1, iCod);
@@ -86,13 +88,20 @@ public class DAO_Registro extends DAO_Comum{
         
         if(rs.next()){
 
+            sEntrada = rs.getString("entrada");
+            sSaida = rs.getString("saida");
+            
+            if (sSaida.compareTo(sEntrada) == 0) sSaida = "";
+
             r = new Registro();
 
             r.setCod(rs.getInt("cod"));
             r.setPlaca(rs.getString("placa"));
-            r.setEntrada(rs.getString("entrada"));
-            r.setSaida(rs.getString("saida"));
+            r.setEntrada(sEntrada);
+            r.setSaida(sSaida);
+            r.setTarifa(rs.getInt("tarifa"));
             r.setValor(rs.getDouble("valor"));
+            r.setUsuario(rs.getString("usuario"));
 
             if (bShow) r.exibeDados(0);
 
@@ -138,7 +147,9 @@ public class DAO_Registro extends DAO_Comum{
                 "placa = ?, " +
                 "entrada = ?, " +
                 "saida = ?, " +
-                "valor = ? " +
+                "tarifa = ?, " +
+                "valor = ?, " +
+                "usuario = ? " +
                 "WHERE cod = ?";
 
         stmt = con.prepareStatement(sSql);
@@ -147,8 +158,10 @@ public class DAO_Registro extends DAO_Comum{
         stmt.setString(1, r.getPlaca());
         stmt.setString(2, r.getEntrada());
         stmt.setString(3, r.getSaida());
-        stmt.setDouble(4, r.getValor());
-        stmt.setDouble(5, r.getCod());
+        stmt.setInt(4, r.getTarifa());
+        stmt.setDouble(5, r.getValor());
+        stmt.setString(6, r.getUsuario());
+        stmt.setInt(7, r.getCod());
 
         // executa o comando SQL
         stmt.executeUpdate();
@@ -212,27 +225,62 @@ public class DAO_Registro extends DAO_Comum{
     //////////////////////////
     ////////// EXIBE
     //////////////////////////
-    public void exibeTodos(){
+    public Double exibeTodos(int iTipo, String sPlaca, String sData_i, String sData_f){
     try {
 
         String sSql;
 
         ConnectionFactory fabricaCon;
         Connection con;
-        PreparedStatement stmt;
+        PreparedStatement stmt=null;
         ResultSet rs;
 
         int iCont, iCod;
         String sAux;
-        double dAux;
+        double dAux, dTotal=0;
 
         // Utiliza a fábrica de conexões para criar uma Connection Sql
         fabricaCon = new ConnectionFactory();
         con = fabricaCon.createConnection();
 
-        // Busca os Proprietarios
-        sSql = "select * from tbl_registros";
-        stmt = con.prepareStatement(sSql);
+        // Busca os Registros
+
+        switch(iTipo) {
+        case 0:
+            sSql = "select * from tbl_registros";
+            stmt = con.prepareStatement(sSql);
+            break;
+        case 1:
+            sSql = 
+                "SELECT * FROM tbl_registros "+
+                "WHERE saida BETWEEN ? AND ? "+
+                "AND saida > entrada AND valor > 0";
+            stmt = con.prepareStatement(sSql);
+            stmt.setString(1, sData_i);
+            stmt.setString(2, sData_f);
+            break;
+        case 2:
+            sSql = 
+                "SELECT * FROM tbl_registros "+
+                "WHERE placa = ? "+
+                "AND saida BETWEEN ? AND ? "+
+                "AND saida > entrada AND valor > 0";
+            stmt = con.prepareStatement(sSql);
+            stmt.setString(1, sPlaca);
+            stmt.setString(2, sData_i);
+            stmt.setString(3, sData_f);
+            break;
+        case 3:
+            sSql = 
+                "SELECT * FROM tbl_registros "+
+                "WHERE saida = entrada";
+            stmt = con.prepareStatement(sSql);
+            break;
+        default:
+            System.out.println("Tipo Invalido! " + iTipo);
+            return 0.0;
+        }
+
 
         rs = stmt.executeQuery();
 
@@ -243,15 +291,19 @@ public class DAO_Registro extends DAO_Comum{
             "Placa  " + " " + 
             "Entrada            " + " " +
             "Saida              " +" " +
-            "Valor     "
+            "Tar" +" " +
+            "Valor" +" " +
+            "Usuario      "
             );
 
-            System.out.println(
+        System.out.println(
             "---" + " " +
             "-------" + " " +
             "-------------------" + " " +
             "-------------------" + " " +
-            "----------"
+            "---" + " " +
+            "-----" + " " +
+            "-------------"
             );
         
 
@@ -277,11 +329,23 @@ public class DAO_Registro extends DAO_Comum{
             sAux = rs.getString(4);
             sAux = this.completaString(sAux, 19);
             System.out.print(sAux + " ");
+
+            // Tarifa
+            sAux = rs.getString(5);
+            sAux = this.completaString(sAux, 3);
+            System.out.print(sAux + " ");
             
             // Valor
-            dAux = rs.getDouble(5);
+            dAux = rs.getDouble(6);
             sAux = Double.toString(dAux);
-            sAux = this.completaString(sAux, 10);
+            sAux = this.completaString(sAux, 5);
+            System.out.print(sAux + " ");
+
+            dTotal += dAux;
+
+            // Usuario
+            sAux = rs.getString(7);
+            sAux = this.completaString(sAux, 13);
             System.out.print(sAux + " ");
 
             System.out.println();
@@ -296,10 +360,13 @@ public class DAO_Registro extends DAO_Comum{
         stmt.close();
         con.close();
 
+        return dTotal;
+
     } 
     catch (SQLException e) {
         System.err.println("Falha na comunicacao com o BD!");
         e.printStackTrace();
+        return 0.0;
     }
     }
 

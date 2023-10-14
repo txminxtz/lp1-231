@@ -1,17 +1,15 @@
 package estacionamento;
 
-import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 class Registro{
+
 
     private int cod;
     private String placa;
     private String entrada;
     private String saida;
+    private int tarifa;
     private Double valor;
+    private String usuario;
 
     public Registro(){}
 
@@ -20,14 +18,18 @@ class Registro{
         String placa, 
         String entrada, 
         String saida, 
-        Double valor) 
+        int tarifa, 
+        Double valor, 
+        String usuario) 
     {
 
         this.cod = cod;
         this.placa = placa;
         this.entrada = entrada;
         this.saida = saida;
+        this.tarifa = tarifa;
         this.valor = valor;
+        this.usuario = usuario;
 
     }
 
@@ -59,11 +61,25 @@ class Registro{
         return this.saida;
     }
 
+    public void setTarifa(int tarifa) {
+        this.tarifa = tarifa;
+    }
+    public int getTarifa () {
+        return this.tarifa;
+    }
+
     public void setValor(Double valor) {
         this.valor = valor;
     }
     public Double getValor () {
         return this.valor;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+    public String getUsuario () {
+        return this.usuario;
     }
 
     public void exibeDados(int iTab){ 
@@ -83,87 +99,13 @@ class Registro{
         System.out.println("Saida: " + saida);
 
         for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Tarifa: " + tarifa);
+
+        for (i=1; i<=iTab; i++) System.out.print("\t");
         System.out.println("Valor: " + valor);
-    }
 
-    public static void main(String args[]){
-
-        String sData, sUsuario, sPlaca, sEntrada, sSaida, sValor, sComando;
-        ResultSet rs;
-
-        try
-        {
-
-            Class.forName("com.mysql.jdbc.Driver");
-
-            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/db_estacionamento","root","bts4");
-
-            Statement stmt=con.createStatement();
-
-            //DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:ms");
-            DateFormat dateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
-            DateFormat dateFormat2 = new SimpleDateFormat("HH:mm:ss");
-            Calendar cal = Calendar.getInstance();
-            
-
-            System.out.println();
-            System.out.println("INCLUSAO DE REGISTROS");
-            System.out.println();
-
-            sData = dateFormat1.format(cal.getTime());
-            System.out.println(sData);
-
-            sEntrada = dateFormat2.format(cal.getTime());
-            System.out.println(sEntrada);
-
-            sUsuario = "1";
-            sPlaca = "JUI9823";
-            sSaida = "null, ";
-
-            sValor = "0.0";
-            
-            sComando = "INSERT INTO tbl_registros " +
-                        "(cod, data, usuario, placa, entrada, saida, valor) " +
-                        "VALUE ("+
-                        "null, " +
-                        "'" + sData + "'" + ", " +
-                        "'" + sUsuario + "'"+ ", " +
-                        "'" + sPlaca + "'" + ", " +
-                        "'" + sEntrada + "'" + ", " +
-                        "'" + sSaida + "'" + ", " +
-                        "'" + sValor + "'" + 
-                        ")";
-
-            stmt.execute(sComando);
-
-
-            System.out.println();
-            System.out.println("RELATORIO DE REGISTROS");
-            System.out.println();
-
-            rs = stmt.executeQuery("select * from tbl_registros");
-
-            while(rs.next()){
-                System.out.println(
-                    rs.getInt(1)    +"  "+
-                    rs.getString(2) +"  "+
-                    rs.getString(3) +"  "+
-                    rs.getString(4) +"  "+
-                    rs.getString(5) +"  "+
-                    rs.getString(6)
-                    );
-            }           
-
-            System.out.println();
-
-            con.close();
-
-        }
-        catch(Exception e)
-        { 
-            System.out.println(e);
-        }
-
+        for (i=1; i<=iTab; i++) System.out.print("\t");
+        System.out.println("Usuario: " + usuario);
     }
 
 }

@@ -20,12 +20,12 @@ public class MenuAux
     /////// RELATORIOS
 
     // RELATORIO
-    public void relatorio(String sTipo) { 
+    public void relatorio_Geral(String sTipo) { 
 
         DAO_Usuario usuarioDAO = new DAO_Usuario();;
         DAO_Proprietario proprietarioDAO = new DAO_Proprietario();
         DAO_Veiculo veiculoDAO = new DAO_Veiculo();
-        DAO_Valor valorDAO = new DAO_Valor();
+        DAO_Tarifa valorDAO = new DAO_Tarifa();
         DAO_Registro registroDAO = new DAO_Registro();
 
         // Verifica se tipo valido
@@ -66,73 +66,114 @@ public class MenuAux
                 valorDAO.exibeTodos(); 
                 break;
         case "REGISTROS":
-                registroDAO.exibeTodos(); 
+                registroDAO.exibeTodos(0,"","", ""); 
                 break;
         }
 
     }
-/*
 
-    // RELATORIO DE USUARIOS
-    public void relatorio_Usuarios() { 
+    // RELATORIO DE VEICULO POR PERIODO
+    public void relatorio_Financeiro(int iTipo) throws SQLException { 
+        try
+        {
+    
+            String sPlaca, sAux, sData, sData_i, sData_f;
+            Double dTotal;
+            DateFormat dateFormat;
+            Calendar cal;
+            
+            DAO_Registro registroDAO = new DAO_Registro();
+    
+            switch(iTipo) {
+            case 1:
+                System.out.println("Relatorio Geral");
+                break;
+            case 2:
+                System.out.println("Relatorio de Veiculo por Periodo");
+                break;
+            case 3:
+                System.out.println("Relatorio de Veiculos Estacionados");
+                break;
+            default:
+                System.out.println("Tipo Invalido! " + iTipo);
+                return;
+            }
+        
+            System.out.println();
+    
+            // Recupera a hora do sistema
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            cal = Calendar.getInstance();
+            
+            sData = dateFormat.format(cal.getTime());
+            System.out.println(sData);
+    
+            System.out.println();
 
-        System.out.println();
-        System.out.println("RELATORIO DE USUARIOS");
-        System.out.println();
+            // Solicita os dados de restrição
+ 
+            switch(iTipo) {
+            case 1:
+                sPlaca = "";
+                sData_i = textInput("Data Inicial (AAAA-MM-DD): ");
+                sData_f = textInput("Data Final (AAAA-MM-DD): ");
+                /* 
+                sData_i = "2023-09-01";
+                sData_f = "2023-09-30";;
+                System.out.println("Placa: " + sPlaca);
+                System.out.println("Data Inicial: " + sData_i);
+                System.out.println("Data Final: " + sData_f);
+                */
+                break;
+            case 2:
+                sPlaca = textInput("Placa: ");
+                sData_i = textInput("Data Inicial (AAAA-MM-DD): ");
+                sData_f = textInput("Data Final (AAAA-MM-DD): ");
+                /*
+                sPlaca = "GBQ9512";
+                sData_i = "2023-09-01";
+                sData_f = "2023-09-30";;
+                System.out.println("Placa: " + sPlaca);
+                System.out.println("Data Inicial: " + sData_i);
+                System.out.println("Data Final: " + sData_f);
+                */
+                break;
+            case 3:
+                sPlaca = "";
+                sData_i = "";
+                sData_f = "";                
+                break;
+            default:
+                System.out.println("Tipo Invalido! " + iTipo);
+                return;
+            }        
+    
+            System.out.println();
+    
+            sAux = textInput("Confirma ? (S/N) ? ");
+    
+            if  (sAux.equalsIgnoreCase("s")==false){
+                return;
+            }
+    
+            sData_i = sData_i + " 00:00:00 ";
+            sData_f = sData_f + " 23:59:59 ";
 
-        //Cria o DAO para conexão com o banco de dados
-        DAO_Usuario usuarioDAO = new DAO_Usuario();
+            dTotal = registroDAO.exibeTodos(iTipo, sPlaca, sData_i, sData_f); 
+    
+            System.out.println();
+            System.out.println("Total: R$ " + dTotal);
 
-        //Salva o veiculo no banco de dados;
-        usuarioDAO.exibeTodos(); 
-
-    }
-
-    // RELATORIO DE PROPRIETARIOS
-    public void relatorio_Proprietarios() { 
-
-        System.out.println();
-        System.out.println("RELATORIO DE PROPRIETARIOS");
-        System.out.println();
-
-        //Cria o DAO para conexão com o banco de dados
-        DAO_Proprietario proprietarioDAO = new DAO_Proprietario();
-
-        //Salva o veiculo no banco de dados;
-        proprietarioDAO.exibeTodos(); 
-
-    }
-
-    // RELATORIO DE VEICULOS
-    public void relatorio_Veiculos() { 
-
-        System.out.println();
-        System.out.println("RELATORIO DE VEICULOS");
-        System.out.println();
-
-        //Cria o DAO para conexão com o banco de dados
-        DAO_Veiculo veiculoDAO = new DAO_Veiculo();
-
-        //Salva o veiculo no banco de dados;
-        veiculoDAO.exibeTodos(); 
-
-    }
-
-    // RELATORIO DE VALORES
-    public void relatorio_Valores() { 
-
-        System.out.println();
-        System.out.println("RELATORIO DE VALORES");
-        System.out.println();
-
-        //Cria o DAO para conexão com o banco de dados
-        DAO_Valor valorDAO = new DAO_Valor();
-
-        //Salva o veiculo no banco de dados;
-        valorDAO.exibeTodos(); 
-
-    }
-    */
+            return;
+    
+        }
+        catch(Exception e)
+        { 
+            System.out.println(e);
+            return;
+        }
+        }
+    
 
     ////////////
     /////// ENTRADA DE DADOS
@@ -244,7 +285,7 @@ public class MenuAux
         try
         {
 
-            String sCod, sNome, sEndereco, sEmail, sTelefone, sAux, sOp;
+            String sCod, sNome, sEmail, sTelefone, sAux, sOp;
             int iCod;
 
             System.out.println("Cadastro de Proprietario");
@@ -305,7 +346,6 @@ public class MenuAux
             }      
 
             sNome = textInput("Nome: ");
-            sEndereco = textInput("Endereco: ");
             sEmail = textInput("Email: ");
             sTelefone = textInput("Telefone: ");
 
@@ -318,7 +358,7 @@ public class MenuAux
             if (sOp == "Inclusao"){
 
                 //Cria o objeto proprietario
-                proprietario= new Proprietario(iCod, sNome, sEndereco, sEmail, sTelefone);
+                proprietario= new Proprietario(iCod, sNome, sEmail, sTelefone);
                 
                 //Salva o proprietario no banco de dados;
                 proprietarioDAO.create(proprietario); 
@@ -328,7 +368,6 @@ public class MenuAux
 
                 proprietario.setCod(iCod);
                 proprietario.setNome(sNome);
-                proprietario.setEndereco(sEndereco);
                 proprietario.setEmail(sEmail);
                 proprietario.setTelefone(sTelefone);
 
@@ -451,7 +490,7 @@ public class MenuAux
 
 
     // CADASTRO DE VALORES
-    public void dadosInput_Valor() throws SQLException { 
+    public void dadosInput_Tarifa() throws SQLException { 
 
         try
         {
@@ -464,11 +503,11 @@ public class MenuAux
             System.out.println("Cadastro de Valores");
             System.out.println();
 
-            Valor valor;
-            DAO_Valor valorDAO;
+            Tarifa valor;
+            DAO_Tarifa valorDAO;
 
             //Cria o DAO para conexão com o banco de dados
-            valorDAO = new DAO_Valor();
+            valorDAO = new DAO_Tarifa();
 
             iCod = 1;
 
@@ -477,7 +516,7 @@ public class MenuAux
             System.out.println();
 
             //Cria o DAO para conexão com o banco de dados
-            valorDAO = new DAO_Valor();
+            valorDAO = new DAO_Tarifa();
 
             valor = valorDAO.read(iCod, true);
 
@@ -531,7 +570,7 @@ public class MenuAux
             if (sOp == "Inclusao"){
 
                 //Cria o objeto valor
-                valor = new Valor(iCod, dPrimeira, dDemais, dDiaria, dMensalidade);
+                valor = new Tarifa(iCod, dPrimeira, dDemais, dDiaria, dMensalidade);
                 
                 //Salva o registro no banco de dados;
                 valorDAO.create(valor); 
@@ -562,11 +601,14 @@ public class MenuAux
     }
 
     // REGISTRO DE ESTACIONAMENTO
-    public void dadosInput_Estacionamento() throws SQLException { 
+    public void dadosInput_Estacionamento(
+        Usuario usuario, 
+        Tarifa tarifa
+        ) throws SQLException { 
     try
     {
 
-        String sPlaca="", sEntrada, sSaida, sAux, sOp, sCod, sData;
+        String sPlaca="", sEntrada="", sSaida="", sAux, sOp, sCod, sData;
         int iCod;
         double dValor;
         DateFormat dateFormat;
@@ -575,22 +617,9 @@ public class MenuAux
         System.out.println("Registro de Estacionamento");
         System.out.println();
 
-        Valor valor;
-        DAO_Valor valorDAO;
-
         Registro registro;
         DAO_Registro registroDAO;
-
-
-        //Cria o DAO para conexão com o banco de dados
-        valorDAO = new DAO_Valor();
-        valor = valorDAO.read(1, true);
         
-        if (valor == null){
-            this.textInput("Registro de valores nao encontrado. Tecle enter <enter>.");
-            return;
-        }
-
         //Cria o DAO para conexão com o banco de dados
         registroDAO = new DAO_Registro();
 
@@ -613,12 +642,27 @@ public class MenuAux
         }
         else {
 
-            sAux = textInput(
-                "Estacionamento registrado! "+
-                "Edita (1), "+
+            sSaida = registro.getSaida();
+            sEntrada = registro.getEntrada();
+
+            if (sSaida.compareTo(sEntrada)>0){
+
+                sAux = textInput(
+                "Cancela Saida (1), "+
                 "Exclui (2) ou "+
                 "Passa (3) ? "
                 );
+
+            }
+            else{
+
+                sAux = textInput(
+                "Registra Saida (1), "+
+                "Exclui (2) ou "+
+                "Passa (3) ? "
+                );
+
+            }
 
             if  (sAux.equals("3")) return;
 
@@ -637,8 +681,12 @@ public class MenuAux
 
             if  (sAux.equals("1")==false) return;
             
-            sOp = "Edicao";
-
+            if (sSaida.compareTo(sEntrada)>0){
+                sOp = "Cancelamento de Saida";
+            }
+            else {
+                sOp = "Registro de Saida";
+            }
         }      
         
         if (sOp == "Inclusao") {
@@ -655,6 +703,40 @@ public class MenuAux
         sData = dateFormat.format(cal.getTime());
         System.out.println(sData);
 
+        //  Calcula Valor
+
+
+        if (sOp == "Inclusao"){
+
+            sEntrada = sData;
+            sSaida = sData;
+            dValor = 0;
+
+        }
+        else { 
+
+            if (sSaida.compareTo(sEntrada)>0){
+                
+                sSaida = sEntrada;
+                dValor = 0.0;
+
+            }
+            else {
+
+                sEntrada = registro.getEntrada();
+                sSaida = sData;
+
+                dValor = calculaValor(tarifa, sEntrada, sSaida);
+
+                System.out.println();
+                System.out.println("Valor: R$ " + dValor );
+                
+            }
+
+
+        }
+
+        System.out.println();
         sAux = textInput("Confirma " + sOp + " (S/N) ? ");
 
         if  (sAux.equalsIgnoreCase("s")==false){
@@ -663,26 +745,14 @@ public class MenuAux
 
         if (sOp == "Inclusao"){
 
-
-            sEntrada = sData;
-            sSaida = sData;
-            dValor = 0;
-
             //Cria o objeto registro
-            registro = new Registro(iCod, sPlaca, sEntrada, sSaida, dValor);
+            registro = new Registro(iCod, sPlaca, sEntrada, sSaida, tarifa.getCod(), dValor, usuario.getLogin());
             
             //Salva o registro no banco de dados;
             registroDAO.create(registro); 
 
         }
-        else {
-
-            sEntrada = registro.getEntrada();
-            sSaida = sData;
-            dValor = 10.0;
-
-            dValor = valor.getPrimeira();
-            dValor = dValor + (hoursBetween(sEntrada, sSaida) - 1) * valor.getDemais();
+        else { 
 
             registro.setSaida(sSaida);
             registro.setValor(dValor);
@@ -705,6 +775,46 @@ public class MenuAux
     ////////////
     /////// FUNÇÕES AUXILIARES
 
+
+    public Tarifa pesquisa_Tarifa() throws SQLException { 
+
+        try
+        {
+
+            Tarifa tarifa;
+            DAO_Tarifa tarifaDAO;
+            int iCod;
+            
+            String sAux="S", sCod;
+
+            //Cria o DAO para conexão com o banco de dados
+            tarifaDAO = new DAO_Tarifa();
+
+            while (sAux.equalsIgnoreCase("s")) {
+
+                System.out.println();
+                sCod = textInput("Codigo da Tarifa: ");
+                iCod = Integer.parseInt(sCod);
+
+
+                tarifa = tarifaDAO.read(iCod, false);
+
+                if (tarifa != null) return tarifa;  
+
+                sAux = this.textInput("Tarifa não Encontrada. Deseja Tentar Novamente (S/N) ? ");
+
+            }
+
+            return null;
+
+        }
+        catch(Exception e)
+        { 
+            System.out.println(e);
+            return null;
+        }        
+
+    }
 
     public Usuario pesquisa_Usuario() throws SQLException { 
 
@@ -763,26 +873,19 @@ public class MenuAux
         )
     {
 
-// 2023-10-07 20:50:20
-
         int iHora_Entrada, iMin_Entrada, iSeg_Entrada, iTotal_Entrada, 
             iHora_Saida, iMin_Saida, iSeg_Saida, iTotal_Saida;
 
         double dTotal;
         String sAux;
 
-        //System.out.println("Entrada: "+sEntrada);
-
         sAux = sEntrada.substring(11, 13);
-        //System.out.println(sAux);
         iHora_Entrada = Integer.parseInt(sAux);
 
         sAux = sEntrada.substring(14, 16);
-        //System.out.println(sAux);
         iMin_Entrada = Integer.parseInt(sAux);
 
         sAux = sEntrada.substring(17, 19);
-        //System.out.println(sAux);
         iSeg_Entrada = Integer.parseInt(sAux);
 
         iTotal_Entrada = 
@@ -790,21 +893,15 @@ public class MenuAux
             iMin_Entrada * 60 +
             iHora_Entrada * 3600;
 
-        //System.out.println("Total: "+iTotal_Entrada);
-        //System.out.println();
-
         System.out.println("Saida: "+sSaida);
 
         sAux = sSaida.substring(11, 13);
-        //System.out.println(sAux);
         iHora_Saida = Integer.parseInt(sAux);
 
         sAux = sSaida.substring(14, 16);
-        //System.out.println(sAux);
         iMin_Saida = Integer.parseInt(sAux);
 
         sAux = sSaida.substring(17, 19);
-        //System.out.println(sAux);
         iSeg_Saida = Integer.parseInt(sAux);
 
         iTotal_Saida = 
@@ -812,24 +909,153 @@ public class MenuAux
             iMin_Saida * 60 +
             iHora_Saida * 3600;
 
-        //System.out.println("Total: "+iTotal_Saida);
-        //System.out.println();
+        dTotal = (iTotal_Saida - iTotal_Entrada) / 3600.0;
 
+        dTotal = Math.ceil(dTotal);
+
+        return (int)dTotal;
+
+    }
+
+
+    public double calculaValor(
+        Tarifa tarifa,
+        String sEntrada,
+        String sSaida
+        )
+    {
+
+
+
+        int iAno_Entrada, iMes_Entrada, iHora_Entrada, iDia_Entrada, 
+            iMin_Entrada, iSeg_Entrada, iTotal_Entrada, 
+            iAno_Saida, iMes_Saida, iDia_Saida,
+            iHora_Saida, iMin_Saida, iSeg_Saida, iTotal_Saida;
+
+        double dTotal, dValor;
+        String sAux;
+
+        /*
+        2023-10-06 09:36:00
+        00000000001111111111
+        01234567890123456789
+        */
+
+        // Entrada
+
+        sAux = sEntrada.substring(0, 4);
+        iAno_Entrada = Integer.parseInt(sAux);
+
+        sAux = sEntrada.substring(5, 7);
+        iMes_Entrada = Integer.parseInt(sAux);
+
+        sAux = sEntrada.substring(8, 10);
+        iDia_Entrada = Integer.parseInt(sAux);
+
+        sAux = sEntrada.substring(11, 13);
+        iHora_Entrada = Integer.parseInt(sAux);
+
+        sAux = sEntrada.substring(14, 16);
+        iMin_Entrada = Integer.parseInt(sAux);
+
+        sAux = sEntrada.substring(17, 19);
+        iSeg_Entrada = Integer.parseInt(sAux);
+
+        // Saida
+
+        sAux = sSaida.substring(0, 04);
+        iAno_Saida = Integer.parseInt(sAux);
+
+        sAux = sSaida.substring(5, 7);
+        iMes_Saida = Integer.parseInt(sAux);
+
+        sAux = sSaida.substring(8, 10);
+        iDia_Saida = Integer.parseInt(sAux);
+
+        sAux = sSaida.substring(11, 13);
+        iHora_Saida = Integer.parseInt(sAux);
+
+        sAux = sSaida.substring(14, 16);
+        iMin_Saida = Integer.parseInt(sAux);
+
+        sAux = sSaida.substring(17, 19);
+        iSeg_Saida = Integer.parseInt(sAux);
+
+        // Calcula o número de meses
+
+        iTotal_Entrada = 
+            iDia_Entrada +
+            iMes_Entrada * 30 +
+            iAno_Entrada * 365;
+
+        iTotal_Saida = 
+            iDia_Saida +
+            iMes_Saida * 30 +
+            iAno_Saida * 365;
+
+        dTotal = (iTotal_Saida - iTotal_Entrada) / 30.0;
+        
+        dTotal = Math.ceil(dTotal); // Número de Meses
+
+        if ((int)dTotal > 1)	// Se for mais que 1 mês 
+        {
+
+                dValor = dTotal * tarifa.getMensalidade();
+                return dValor;
+
+        }
+
+        // Calcula o número de dias
+
+        iTotal_Entrada = 
+            iHora_Entrada +
+            iDia_Entrada * 24 +
+            iMes_Entrada * 30 * 24+
+            iAno_Entrada * 365 * 24;
+
+        iTotal_Saida = 
+            iHora_Saida +
+            iDia_Saida * 24 +
+            iMes_Saida * 30 * 24 +
+            iAno_Saida * 365 * 24;
+
+        dTotal = (iTotal_Saida - iTotal_Entrada) / 24.0;
+        
+        dTotal = Math.ceil(dTotal); // Número de Dias
+
+        if ((int)dTotal > 1)	// Se for mais que 1 Dia 
+        {
+
+                dValor = dTotal * tarifa.getDiaria();
+                if (dValor > tarifa.getMensalidade()) dValor = tarifa.getMensalidade();
+
+                return dValor;
+
+        }
+
+
+        // Calcula o número de Horas
+
+        iTotal_Entrada = 
+            iSeg_Entrada +
+            iMin_Entrada * 60 +
+            iHora_Entrada * 3600;
+
+        iTotal_Saida = 
+            iSeg_Saida +
+            iMin_Saida * 60 +
+            iHora_Saida * 3600;
 
         dTotal = (iTotal_Saida - iTotal_Entrada) / 3600.0;
 
-        //System.out.println("dTotal: "+dTotal);
-
-
         dTotal = Math.ceil(dTotal);
-        //System.out.println("dTotal Arredondado: "+dTotal);
 
-        //System.out.println("(int)dTotal: "+(int)dTotal);
+                dValor = tarifa.getPrimeira();
+                dValor = dValor + (dTotal - 1) * tarifa.getDemais();
 
-        //System.out.println();
+                if (dValor > tarifa.getDiaria()) dValor = tarifa.getDiaria();
 
-
-        return (int)dTotal;
+                return dValor;
 
     }
 

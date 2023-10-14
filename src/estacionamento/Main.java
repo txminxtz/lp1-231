@@ -46,6 +46,31 @@ public class Main
 
         }
 
+        ////////////
+        /////// TARIFA
+
+        Tarifa tarifa=null;
+        DAO_Tarifa tarifaDAO;
+
+        //Cria o DAO para conexão com o banco de dados
+        tarifaDAO = new DAO_Tarifa();
+
+        tarifa = tarifaDAO.read(1, true);
+
+        if (tarifa == null){
+
+            tarifa = new Tarifa(
+                1, 
+                12.00, 
+                6.00, 
+                30.00, 
+                150.00
+                );
+
+            //Salva a tarifa no banco de dados;
+            tarifaDAO.create(tarifa); 
+
+        }
 
 
         if (iNivel >= 1) {
@@ -89,7 +114,7 @@ public class Main
         sSaida = sData;  
         dValor = 0.0;
 
-        registro = new Registro(iCod, sPlaca, sEntrada, sSaida, dValor);
+        registro = new Registro(iCod, sPlaca, sEntrada, sSaida, tarifa.getCod(), dValor, usuario.getLogin());
             
         //Salva o registro no banco de dados;
         registroDAO.create(registro); 
@@ -141,7 +166,6 @@ public class Main
         proprietario = new Proprietario(
             iCod, 
             "Bernardo", 
-            "rua santa isabel", 
             "bernardo@gmail.com",
             "11983248795"
             );
@@ -155,7 +179,7 @@ public class Main
         /////// MENU
         
         //new Menu(sUrl, sUser, sPassword);
-        new Menu(usuario);
+        new Menu(usuario, tarifa);
 
     }
     catch(Exception e)

@@ -5,17 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DAO_Proprietario extends DAO_Comum{
+public class DAO_Tarifa extends DAO_Comum{
 
-    public DAO_Proprietario(){
-        super("tbl_proprietarios");
+    public DAO_Tarifa(){
+        super("tbl_tarifas");
     }
 
 
     //////////////////////////
     ////////// CREATE
     //////////////////////////
-    public void create(Proprietario p){
+    public void create(Tarifa v){
     try {
 
         String sSql;
@@ -29,13 +29,15 @@ public class DAO_Proprietario extends DAO_Comum{
         con = fabricaCon.createConnection();
 
         // cria um preparedStatement baseado em uma string SQL
-        sSql = "INSERT INTO tbl_proprietarios VALUES (?, ?, ?, ?);";
+        sSql = "INSERT INTO tbl_tarifas VALUES (?, ?, ?, ?, ?);";
         stmt = con.prepareStatement(sSql);
 
         // preenche os valores para (?,?, ..., ?)
-        stmt.setString(1, p.getNome());
-        stmt.setString(3, p.getEmail());
-        stmt.setString(4, p.getTelefone());
+        stmt.setInt(1, v.getCod());
+        stmt.setDouble(2, v.getPrimeira());
+        stmt.setDouble(3, v.getDemais());
+        stmt.setDouble(4, v.getDiaria());
+        stmt.setDouble(5, v.getMensalidade());
 
         // executa o comando SQL
         stmt.executeUpdate();
@@ -44,9 +46,9 @@ public class DAO_Proprietario extends DAO_Comum{
         con.close();
 
         System.out.println(
-            "O Proprietario " + 
+            "A Tarifa " + 
             //p.cod() + 
-            " foi incluido com sucesso."
+            " foi incluida com sucesso."
             );
 
     } 
@@ -59,7 +61,7 @@ public class DAO_Proprietario extends DAO_Comum{
     //////////////////////////
     ////////// READ
     //////////////////////////
-    public Proprietario read(int iCod, Boolean bShow){
+    public Tarifa read(int iCod, Boolean bShow){
     try {
 
         String sSql;
@@ -69,14 +71,14 @@ public class DAO_Proprietario extends DAO_Comum{
         PreparedStatement stmt;
         ResultSet rs;
 
-        Proprietario p;
+        Tarifa v;
 
         // Utiliza a fábrica de conexões para criar uma Connection Sql
         fabricaCon = new ConnectionFactory();
         con = fabricaCon.createConnection();
 
         // Busca o aluno pela matrícula
-        sSql = "SELECT * FROM tbl_proprietarios WHERE cod = ?";
+        sSql = "SELECT * FROM tbl_tarifas WHERE cod = ?";
         stmt = con.prepareStatement(sSql);
         stmt.setInt(1, iCod);
 
@@ -84,20 +86,21 @@ public class DAO_Proprietario extends DAO_Comum{
         
         if(rs.next()){
 
-            p = new Proprietario();
+            v = new Tarifa();
 
-            p.setCod(rs.getInt("cod"));
-            p.setNome(rs.getString("nome"));
-            p.setEmail(rs.getString("email"));
-            p.setTelefone(rs.getString("telefone"));
+            v.setCod(rs.getInt("cod"));
+            v.setPrimeira(rs.getDouble("primeira"));
+            v.setDemais(rs.getDouble("demais"));
+            v.setDiaria(rs.getDouble("diaria"));
+            v.setMensalidade(rs.getDouble("mensalidade"));
 
-            if (bShow) p.exibeDados(0);
+            if (bShow) v.exibeDados(0);
 
-            return p;
+            return v;
 
         }
         else{
-            if (bShow) System.out.println("Proprietario nao encontrado!");
+            if (bShow) System.out.println("Tarifa nao encontrada!");
         }
 
         stmt.close();
@@ -116,7 +119,7 @@ public class DAO_Proprietario extends DAO_Comum{
     //////////////////////////
     ////////// UPDATE
     //////////////////////////
-    public void update(Proprietario p){
+    public void update(Tarifa v){
     try {
 
         String sSql;
@@ -130,20 +133,22 @@ public class DAO_Proprietario extends DAO_Comum{
         con = fabricaCon.createConnection();
 
         // cria um preparedStatement baseado em uma string SQL
-        sSql =  "UPDATE tbl_proprietarios " +
+        sSql =  "UPDATE tbl_tarifas " +
                 "SET " +
-                "nome = ?, " +
-                "email = ?, " +
-                "telefone = ? " +
+                "primeira = ?, " +
+                "demais = ?, " +
+                "diaria = ?, " +
+                "mensalidade = ? " +
                 "WHERE cod = ?";
 
         stmt = con.prepareStatement(sSql);
 
         // preenche os valores para (?,?, ..., ?)
-        stmt.setString(1, p.getNome());
-        stmt.setString(3, p.getEmail());
-        stmt.setString(4, p.getTelefone());
-        stmt.setDouble(5, p.getCod());
+        stmt.setDouble(1, v.getPrimeira());
+        stmt.setDouble(2, v.getDemais());
+        stmt.setDouble(3, v.getDiaria());
+        stmt.setDouble(4, v.getMensalidade());
+        stmt.setDouble(5, v.getCod());
 
         // executa o comando SQL
         stmt.executeUpdate();
@@ -152,9 +157,9 @@ public class DAO_Proprietario extends DAO_Comum{
         con.close();
 
         System.out.println(
-            "O proprietario " + 
+            "A Tarifa " + 
             //p.getPlaca() + 
-            " foi atualizado com sucesso."
+            " foi atualizada com sucesso."
             );
 
     } 
@@ -167,7 +172,7 @@ public class DAO_Proprietario extends DAO_Comum{
     //////////////////////////
     ////////// DELETE
     //////////////////////////
-    public void delete (Proprietario p){
+    public void delete (Tarifa v){
     try {
 
         String sSql;
@@ -181,10 +186,10 @@ public class DAO_Proprietario extends DAO_Comum{
         con = fabricaCon.createConnection();
 
         // Remove o Proprietario
-        sSql = "DELETE FROM tbl_proprietarios WHERE placa = ?";
+        sSql = "DELETE FROM tbl_tarifas WHERE cod = ?";
 
         stmt = con.prepareStatement(sSql);
-        stmt.setInt(1, p.getCod());
+        stmt.setInt(1, v.getCod());
 
         stmt.execute();
         
@@ -192,9 +197,9 @@ public class DAO_Proprietario extends DAO_Comum{
         con.close();
 
         System.out.println(
-            "O proprietario " + 
-            p.getCod() + 
-            " foi excluido com sucesso."
+            "A Tarifa " + 
+            v.getCod() + 
+            " foi excluida com sucesso."
             );
 
     } 
@@ -219,13 +224,14 @@ public class DAO_Proprietario extends DAO_Comum{
 
         int iCont, iCod;
         String sAux;
+        double dAux; 
 
         // Utiliza a fábrica de conexões para criar uma Connection Sql
         fabricaCon = new ConnectionFactory();
         con = fabricaCon.createConnection();
 
         // Busca os Proprietarios
-        sSql = "select * from tbl_proprietarios";
+        sSql = "select * from tbl_tarifas";
         stmt = con.prepareStatement(sSql);
 
         rs = stmt.executeQuery();
@@ -234,13 +240,13 @@ public class DAO_Proprietario extends DAO_Comum{
 
         System.out.println(
             "Cod       " + " " + 
-            "Nome      " + " " + 
-            "Endereco  " + " " +
-            "Email     " +" " +
-            "Telefone  "
+            "Primeira  " + " " + 
+            "Demais    " + " " +
+            "Diaria    " +" " +
+            "Mensalidade"
             );
 
-            System.out.println(
+        System.out.println(
             "----------" + " " +
             "----------" + " " +
             "----------" + " " +
@@ -258,7 +264,9 @@ public class DAO_Proprietario extends DAO_Comum{
             System.out.print(sAux + " ");
 
             for (int i=2;i<=5;i++){
-                sAux = rs.getString(i);
+                dAux = rs.getDouble(i);
+                sAux = String.valueOf(dAux);
+
                 sAux = this.completaString(sAux, 10);
                 System.out.print(sAux + " ");
             }
@@ -269,7 +277,7 @@ public class DAO_Proprietario extends DAO_Comum{
         }           
 
         if (iCont==0){
-            System.out.println("Proprietarios nao encontrados!");
+            System.out.println("Tarifas nao encontradas!");
         }
 
         stmt.close();
