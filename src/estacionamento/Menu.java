@@ -26,7 +26,8 @@ public class Menu
         System.out.println();
         System.out.println("ESTACIONAMENTO");
 
-        if (usuario == null) usuario = menuAux.pesquisa_Usuario();
+        //if (usuario == null) usuario = menuAux.pesquisa_Usuario();
+        usuario = menuAux.pesquisa_Usuario();
 
         if (usuario == null) return;
        
